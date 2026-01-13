@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Composite Rating Impact Analysis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { Info, TrendingUp, Users, Zap } = lucide;
+
+        const CompositeImpactAnalysis = () => {
+            const [selectedCategory, setSelectedCategory] = useState('passing');
+
+            const categories = {
+                passing: {
+                    title: 'Passing Play Decisions',
+                    icon: React.createElement(Zap, { className: "w-5 h-5" }),
+                    color: 'blue',
+                    impacts: [
+                        {
+                            name: 'Pass vs Run Decision (probPass)',
+                            formula: 'offPassing = (5*QB_rating + receiving + passBlocking) / 7',
+                            weight: 'High',
+                            details: [
+                                'QB rating weighted 5x more than other factors',
+                                'Base pass odds: 57% (can range 45-65%)',
+                                'Rescaled from 0.45-0.7 range to 0.25-0.75',
+                                'Modified by passFactor setting',
+                                'Near goal line: heavily favors running'
+                            ]
+                        },
+                        {
+                            name: 'Completion Probability',
+                            formula: '(0.2 * (catching + gettingOpen + passingAccuracy + passingDeep + passingVision)) / (0.5 * (passCoverage + teamPassCoverage)) * sqrt(passBlocking/passRushing)',
+                            weight: 'Critical',
+                            details: [
+                                'Base: 24% + scaled by formula',
+                                'Capped at 95% max',
+                                'Modified by completionFactor setting',
+                                'Defender coverage reduces probability',
+                                'Pass blocking vs rush differential matters'
+                            ]
+                        },
+                        {
+                            name: 'Sack Probability',
+                            formula: '(0.06 * passRushing) / (0.5 * (avoidingSacks + passBlocking)) * sackFactor',
+                            weight: 'High',
+                            details: [
+                                'Directly proportional to defense pass rush',
+                                'Reduced by QB mobility and O-line blocking',
+                                'Modified by sackFactor setting'
+                            ]
+                        },
+                        {
+                            name: 'Interception Probability',
+                            formula: '(((0.004*passCoverage + 0.022*defenderCoverage)/(0.5*(passingVision + passingAccuracy))) * passRushing) / passBlocking * intFactor',
+                            weight: 'High',
+                            details: [
+                                'Defender coverage weighted more (0.022 vs 0.004)',
+                                'QB vision and accuracy reduce risk',
+                                'Pass rush pressure increases INTs',
+                                'Modified by intFactor setting'
+                            ]
+                        }
+                    ]
+                },
+                rushing: {
+                    title: 'Rushing Play Mechanics',
+                    icon: React.createElement(Users, { className: "w-5 h-5" }),
+                    color: 'green',
+                    impacts: [
+                        {
+                            name: 'Rush Yards Expected',
+                            formula: 'meanYds = (3.5 * 0.5 * (rushing + runBlocking)) / runStopping',
+                            weight: 'Critical',
+                            details: [
+                                'Equal weight to RB skill and O-line blocking',
+                                'Divided by defensive run stopping',
+                                'Random gaussian distribution around mean',
+                                'Modified by rushYdsFactor setting',
+                                'QB scrambles get 3x modifier'
+                            ]
+                        },
+                        {
+                            name: 'Pass vs Run Tendency',
+                            formula: 'rushingTendency = 0.925 * bound(offRushing - 0.25*defRushing)',
+                            weight: 'Medium',
+                            details: [
+                                'offRushing = (rushing + runBlocking) / 2',
+                                'Defense gets 0.25x weight vs offense',
+                                'Compared against passing tendency',
+                                'Ensures minimum 35% rush frequency'
+                            ]
+                        }
+                    ]
+                },
+                receiving: {
+                    title: 'Receiving & Target Selection',
+                    icon: React.createElement(TrendingUp, { className: "w-5 h-5" }),
+                    color: 'purple',
+                    impacts: [
+                        {
+                            name: 'Receiver Composite',
+                            formula: 'Top 3 receivers weighted 5, 3, 2, plus 0.5 and 0.25 for depth',
+                            weight: 'High',
+                            details: [
+                                'Uses WR overall rating for sorting',
+                                'Includes WR, TE, RB positions',
+                                'Depth receivers add small contribution',
+                                'Factors into pass vs run decision'
+                            ]
+                        },
+                        {
+                            name: 'Target Selection',
+                            formula: 'Weighted by catching (20%) or gettingOpen (80%)',
+                            weight: 'Medium',
+                            details: [
+                                'Getting open weighted 4x more than catching',
+                                'RB targets often shorter (50% yardage for low gettingOpen)',
+                                'Speed adds ~10 yards adjustment',
+                                'Deep passes: 5% chance based on QB passingDeep'
+                            ]
+                        }
+                    ]
+                },
+                blocking: {
+                    title: 'Offensive & Defensive Lines',
+                    icon: React.createElement(Users, { className: "w-5 h-5" }),
+                    color: 'orange',
+                    impacts: [
+                        {
+                            name: 'Pass Blocking Composite',
+                            formula: 'Top 5 OL weighted 5,4,3,3,3, plus TE(1) and RB(0.5)',
+                            weight: 'Critical',
+                            details: [
+                                'Protects against sacks',
+                                'Reduces interception probability',
+                                'Affects completion percentage (via sqrt ratio)',
+                                'Uses OL overall rating + passBlocking composite average'
+                            ]
+                        },
+                        {
+                            name: 'Run Blocking Composite',
+                            formula: 'Top 5 OL weighted 5,4,3,3,3, plus TE(1) and RB(0.5)',
+                            weight: 'Critical',
+                            details: [
+                                'Directly impacts rush yards (50% of formula)',
+                                'Uses OL overall rating + runBlocking composite average',
+                                'Same weighting structure as pass blocking'
+                            ]
+                        },
+                        {
+                            name: 'Pass Rushing Composite',
+                            formula: 'Top 5 DL/LB weighted 5,4,3,2,1',
+                            weight: 'High',
+                            details: [
+                                'Drives sack probability',
+                                'Increases interception chances',
+                                'Uses DL overall rating + passRushing composite average'
+                            ]
+                        },
+                        {
+                            name: 'Run Stopping Composite',
+                            formula: 'Top 7 DL/LB/S weighted 5,4,3,2,2,1,1, plus 0.5 depth',
+                            weight: 'High',
+                            details: [
+                                'Reduces opponent rush yards',
+                                'More positions involved than pass rush',
+                                'Uses DL overall rating + runStopping composite average'
+                            ]
+                        }
+                    ]
+                },
+                coverage: {
+                    title: 'Pass Defense & Coverage',
+                    icon: React.createElement(Info, { className: "w-5 h-5" }),
+                    color: 'red',
+                    impacts: [
+                        {
+                            name: 'Pass Coverage Composite',
+                            formula: 'Top 4 CB/S/LB weighted 5,4,3,2, plus 1 and 0.5 depth',
+                            weight: 'Critical',
+                            details: [
+                                'Reduces completion percentage',
+                                'Increases interception probability',
+                                'Uses CB overall rating + passCoverage composite average',
+                                'Individual defender matters for completions'
+                            ]
+                        },
+                        {
+                            name: 'Team vs Individual Coverage',
+                            formula: 'Team composite (0.5x) + Individual defender coverage',
+                            weight: 'High',
+                            details: [
+                                'Completion: Both team and individual defender count',
+                                'Interception: Individual defender weighted more (0.022 vs 0.004)',
+                                'Shows both scheme and individual talent matter'
+                            ]
+                        }
+                    ]
+                },
+                special: {
+                    title: 'Special Teams & Situational',
+                    icon: React.createElement(Zap, { className: "w-5 h-5" }),
+                    color: 'yellow',
+                    impacts: [
+                        {
+                            name: 'Field Goal Probability',
+                            formula: 'Base % by distance, adjusted by kickingPower (-20 to +20 yds) and kickingAccuracy (up to ±baseProb/2)',
+                            weight: 'High',
+                            details: [
+                                'Distance adjusted by kicker power composite',
+                                'Accuracy provides bonus (max: half of base probability)',
+                                'Modified by fgAccuracyFactor setting',
+                                'Ranges from 99% (under 20 yds) to 0% (75+ yds)'
+                            ]
+                        },
+                        {
+                            name: 'Fumble Probability',
+                            formula: '0.0125 * (1.5 - ballSecurity) * fumbleFactor',
+                            weight: 'Medium',
+                            details: [
+                                'Lower ballSecurity = more fumbles',
+                                'Modified by fumbleFactor setting',
+                                'Applies to rushes and receptions'
+                            ]
+                        },
+                        {
+                            name: 'QB Scramble Probability',
+                            formula: '0.01 + max(0, 0.35*(qbRB_ovr - 30)/100) * scrambleFactor',
+                            weight: 'Low',
+                            details: [
+                                'Based on QB rushing overall rating',
+                                'Threshold at 30 rating',
+                                'Modified by scrambleFactor setting'
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            const getColorClass = (color) => {
+                const colors = {
+                    blue: 'bg-blue-50 border-blue-200 text-blue-900',
+                    green: 'bg-green-50 border-green-200 text-green-900',
+                    purple: 'bg-purple-50 border-purple-200 text-purple-900',
+                    orange: 'bg-orange-50 border-orange-200 text-orange-900',
+                    red: 'bg-red-50 border-red-200 text-red-900',
+                    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-900'
+                };
+                return colors[color] || colors.blue;
+            };
+
+            const getWeightBadge = (weight) => {
+                const colors = {
+                    Critical: 'bg-red-100 text-red-800 border-red-300',
+                    High: 'bg-orange-100 text-orange-800 border-orange-300',
+                    Medium: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+                    Low: 'bg-green-100 text-green-800 border-green-300'
+                };
+                return colors[weight] || colors.Medium;
+            };
+
+            const category = categories[selectedCategory];
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="mb-8">
+                            <h1 className="text-4xl font-bold text-slate-800 mb-2">
+                                Football Composite Rating Impact Analysis
+                            </h1>
+                            <p className="text-slate-600 text-lg">
+                                Understanding how player ratings drive game simulation outcomes
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+                            {Object.entries(categories).map(([key, cat]) => (
+                                <button
+                                    key={key}
+                                    onClick={() => setSelectedCategory(key)}
+                                    className={`p-4 rounded-lg border-2 transition-all ${
+                                        selectedCategory === key
+                                            ? getColorClass(cat.color) + ' shadow-lg scale-105'
+                                            : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                                    }`}
+                                >
+                                    <div className="flex flex-col items-center gap-2">
+                                        {cat.icon}
+                                        <span className="text-sm font-semibold text-center">{cat.title}</span>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                            <div className="flex items-center gap-3 mb-6">
+                                {category.icon}
+                                <h2 className="text-3xl font-bold text-slate-800">{category.title}</h2>
+                            </div>
+
+                            <div className="space-y-6">
+                                {category.impacts.map((impact, idx) => (
+                                    <div 
+                                        key={idx}
+                                        className="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                                    >
+                                        <div className="flex items-start justify-between mb-4">
+                                            <h3 className="text-xl font-bold text-slate-800 flex-1">
+                                                {impact.name}
+                                            </h3>
+                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getWeightBadge(impact.weight)}`}>
+                                                {impact.weight} Impact
+                                            </span>
+                                        </div>
+
+                                        <div className="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                                            <div className="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                                            <code className="text-sm text-slate-800 font-mono break-all">
+                                                {impact.formula}
+                                            </code>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            {impact.details.map((detail, detailIdx) => (
+                                                <div key={detailIdx} className="flex items-start gap-2">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0" />
+                                                    <p className="text-slate-700 text-sm leading-relaxed">{detail}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+                            <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                {React.createElement(Info, { className: "w-5 h-5" })}
+                                Key Insights
+                            </h3>
+                            <div className="space-y-2 text-sm text-blue-800">
+                                <p>• <strong>Multiplicative Effects:</strong> Most formulas multiply offense vs defense ratings, making balanced teams stronger than unbalanced ones</p>
+                                <p>• <strong>Fatigue Impact:</strong> Player energy levels directly multiply their composite ratings during play selection</p>
+                                <p>• <strong>Depth Matters:</strong> While starters are weighted heavily, backup contributions are included in most composites</p>
+                                <p>• <strong>Position-Specific:</strong> Each position uses a mix of overall rating and specific composite rating (averaged)</p>
+                                <p>• <strong>Game Settings:</strong> Many probabilities can be tuned via factor settings (passFactor, sackFactor, etc.)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<CompositeImpactAnalysis />, document.getElementById('root'));
+    </script>
+</body>
+</html>

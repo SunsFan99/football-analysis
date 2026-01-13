@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Football Composite Rating Impact Analysis</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
@@ -15,7 +14,37 @@
 
     <script type="text/babel">
         const { useState } = React;
-        const { Info, TrendingUp, Users, Zap } = lucide;
+
+        // Inline SVG icon components instead of using lucide
+        const Info = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" strokeWidth="2"/>
+                <line x1="12" y1="16" x2="12" y2="12" strokeWidth="2"/>
+                <circle cx="12" cy="8" r="0.5" fill="currentColor" strokeWidth="2"/>
+            </svg>
+        );
+
+        const TrendingUp = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" strokeWidth="2"/>
+                <polyline points="17 6 23 6 23 12" strokeWidth="2"/>
+            </svg>
+        );
+
+        const Users = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeWidth="2"/>
+                <circle cx="9" cy="7" r="4" strokeWidth="2"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" strokeWidth="2"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" strokeWidth="2"/>
+            </svg>
+        );
+
+        const Zap = ({ className }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" strokeWidth="2"/>
+            </svg>
+        );
 
         const CompositeImpactAnalysis = () => {
             const [selectedCategory, setSelectedCategory] = useState('passing');
@@ -23,7 +52,7 @@
             const categories = {
                 passing: {
                     title: 'Passing Play Decisions',
-                    icon: React.createElement(Zap, { className: "w-5 h-5" }),
+                    icon: <Zap className="w-5 h-5" />,
                     color: 'blue',
                     impacts: [
                         {
@@ -75,7 +104,7 @@
                 },
                 rushing: {
                     title: 'Rushing Play Mechanics',
-                    icon: React.createElement(Users, { className: "w-5 h-5" }),
+                    icon: <Users className="w-5 h-5" />,
                     color: 'green',
                     impacts: [
                         {
@@ -105,7 +134,7 @@
                 },
                 receiving: {
                     title: 'Receiving & Target Selection',
-                    icon: React.createElement(TrendingUp, { className: "w-5 h-5" }),
+                    icon: <TrendingUp className="w-5 h-5" />,
                     color: 'purple',
                     impacts: [
                         {
@@ -134,7 +163,7 @@
                 },
                 blocking: {
                     title: 'Offensive & Defensive Lines',
-                    icon: React.createElement(Users, { className: "w-5 h-5" }),
+                    icon: <Users className="w-5 h-5" />,
                     color: 'orange',
                     impacts: [
                         {
@@ -182,7 +211,7 @@
                 },
                 coverage: {
                     title: 'Pass Defense & Coverage',
-                    icon: React.createElement(Info, { className: "w-5 h-5" }),
+                    icon: <Info className="w-5 h-5" />,
                     color: 'red',
                     impacts: [
                         {
@@ -210,7 +239,7 @@
                 },
                 special: {
                     title: 'Special Teams & Situational',
-                    icon: React.createElement(Zap, { className: "w-5 h-5" }),
+                    icon: <Zap className="w-5 h-5" />,
                     color: 'yellow',
                     impacts: [
                         {
@@ -346,7 +375,7 @@
 
                         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
                             <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
-                                {React.createElement(Info, { className: "w-5 h-5" })}
+                                <Info className="w-5 h-5" />
                                 Key Insights
                             </h3>
                             <div className="space-y-2 text-sm text-blue-800">

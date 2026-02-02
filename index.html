@@ -3,395 +3,904 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Composite Rating Impact Analysis</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Football Game Simulation - Technical Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div id="root"></div>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-8 md:p-12">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">⚡ Football Game Simulation Analysis</h1>
+            <p class="text-slate-300 text-lg">Deep dive into composite ratings and gameplay mechanics</p>
+        </div>
+    </div>
 
-    <script type="text/babel">
-        const { useState } = React;
+    <!-- Main Container -->
+    <div class="max-w-6xl mx-auto p-6">
+        
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 border border-slate-200">
+                <div class="text-3xl font-bold text-slate-800">14+</div>
+                <div class="text-sm text-slate-600 mt-1">Composite Ratings</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border border-slate-200">
+                <div class="text-3xl font-bold text-slate-800">50+</div>
+                <div class="text-sm text-slate-600 mt-1">Player Attributes</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border border-slate-200">
+                <div class="text-3xl font-bold text-slate-800">100+</div>
+                <div class="text-sm text-slate-600 mt-1">Simulation Factors</div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border border-slate-200">
+                <div class="text-3xl font-bold text-slate-800">2400+</div>
+                <div class="text-sm text-slate-600 mt-1">Lines of Code</div>
+            </div>
+        </div>
 
-        // Inline SVG icon components instead of using lucide
-        const Info = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                <line x1="12" y1="16" x2="12" y2="12" strokeWidth="2"/>
-                <circle cx="12" cy="8" r="0.5" fill="currentColor" strokeWidth="2"/>
-            </svg>
-        );
+        <!-- Navigation Tabs -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 mb-8">
+            <button class="nav-tab p-4 rounded-lg border-2 transition-all bg-blue-50 border-blue-500 text-blue-900 shadow-lg flex flex-col items-center gap-2" data-tab="overview">
+                <span class="text-2xl">📊</span>
+                <span class="text-sm font-semibold text-center">Overview</span>
+            </button>
+            <button class="nav-tab p-4 rounded-lg border-2 transition-all bg-white border-slate-200 text-slate-700 hover:border-slate-400 flex flex-col items-center gap-2" data-tab="passing">
+                <span class="text-2xl">⚡</span>
+                <span class="text-sm font-semibold text-center">Passing</span>
+            </button>
+            <button class="nav-tab p-4 rounded-lg border-2 transition-all bg-white border-slate-200 text-slate-700 hover:border-slate-400 flex flex-col items-center gap-2" data-tab="rushing">
+                <span class="text-2xl">🏃</span>
+                <span class="text-sm font-semibold text-center">Rushing</span>
+            </button>
+            <button class="nav-tab p-4 rounded-lg border-2 transition-all bg-white border-slate-200 text-slate-700 hover:border-slate-400 flex flex-col items-center gap-2" data-tab="receiving">
+                <span class="text-2xl">📍</span>
+                <span class="text-sm font-semibold text-center">Receiving</span>
+            </button>
+            <button class="nav-tab p-4 rounded-lg border-2 transition-all bg-white border-slate-200 text-slate-700 hover:border-slate-400 flex flex-col items-center gap-2" data-tab="lines">
+                <span class="text-2xl">👥</span>
+                <span class="text-sm font-semibold text-center">Lines</span>
+            </button>
+            <button class="nav-tab p-4 rounded-lg border-2 transition-all bg-white border-slate-200 text-slate-700 hover:border-slate-400 flex flex-col items-center gap-2" data-tab="defense">
+                <span class="text-2xl">🛡️</span>
+                <span class="text-sm font-semibold text-center">Defense</span>
+            </button>
+            <button class="nav-tab p-4 rounded-lg border-2 transition-all bg-white border-slate-200 text-slate-700 hover:border-slate-400 flex flex-col items-center gap-2" data-tab="special">
+                <span class="text-2xl">⭐</span>
+                <span class="text-sm font-semibold text-center">Special</span>
+            </button>
+        </div>
 
-        const TrendingUp = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" strokeWidth="2"/>
-                <polyline points="17 6 23 6 23 12" strokeWidth="2"/>
-            </svg>
-        );
+        <!-- OVERVIEW SECTION -->
+        <div class="content-section" id="overview">
+            <div class="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span>📊</span>
+                    System Overview
+                </h2>
 
-        const Users = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" strokeWidth="2"/>
-                <circle cx="9" cy="7" r="4" strokeWidth="2"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" strokeWidth="2"/>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" strokeWidth="2"/>
-            </svg>
-        );
-
-        const Zap = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" strokeWidth="2"/>
-            </svg>
-        );
-
-        const CompositeImpactAnalysis = () => {
-            const [selectedCategory, setSelectedCategory] = useState('passing');
-
-            const categories = {
-                passing: {
-                    title: 'Passing Play Decisions',
-                    icon: <Zap className="w-5 h-5" />,
-                    color: 'blue',
-                    impacts: [
-                        {
-                            name: 'Pass vs Run Decision (probPass)',
-                            formula: 'offPassing = (5*QB_rating + receiving + passBlocking) / 7',
-                            weight: 'High',
-                            details: [
-                                'QB rating weighted 5x more than other factors',
-                                'Base pass odds: 57% (can range 45-65%)',
-                                'Rescaled from 0.45-0.7 range to 0.25-0.75',
-                                'Modified by passFactor setting',
-                                'Near goal line: heavily favors running'
-                            ]
-                        },
-                        {
-                            name: 'Completion Probability',
-                            formula: '(0.2 * (catching + gettingOpen + passingAccuracy + passingDeep + passingVision)) / (0.5 * (passCoverage + teamPassCoverage)) * sqrt(passBlocking/passRushing)',
-                            weight: 'Critical',
-                            details: [
-                                'Base: 24% + scaled by formula',
-                                'Capped at 95% max',
-                                'Modified by completionFactor setting',
-                                'Defender coverage reduces probability',
-                                'Pass blocking vs rush differential matters'
-                            ]
-                        },
-                        {
-                            name: 'Sack Probability',
-                            formula: '(0.06 * passRushing) / (0.5 * (avoidingSacks + passBlocking)) * sackFactor',
-                            weight: 'High',
-                            details: [
-                                'Directly proportional to defense pass rush',
-                                'Reduced by QB mobility and O-line blocking',
-                                'Modified by sackFactor setting'
-                            ]
-                        },
-                        {
-                            name: 'Interception Probability',
-                            formula: '(((0.004*passCoverage + 0.022*defenderCoverage)/(0.5*(passingVision + passingAccuracy))) * passRushing) / passBlocking * intFactor',
-                            weight: 'High',
-                            details: [
-                                'Defender coverage weighted more (0.022 vs 0.004)',
-                                'QB vision and accuracy reduce risk',
-                                'Pass rush pressure increases INTs',
-                                'Modified by intFactor setting'
-                            ]
-                        }
-                    ]
-                },
-                rushing: {
-                    title: 'Rushing Play Mechanics',
-                    icon: <Users className="w-5 h-5" />,
-                    color: 'green',
-                    impacts: [
-                        {
-                            name: 'Rush Yards Expected',
-                            formula: 'meanYds = (3.5 * 0.5 * (rushing + runBlocking)) / runStopping',
-                            weight: 'Critical',
-                            details: [
-                                'Equal weight to RB skill and O-line blocking',
-                                'Divided by defensive run stopping',
-                                'Random gaussian distribution around mean',
-                                'Modified by rushYdsFactor setting',
-                                'QB scrambles get 3x modifier'
-                            ]
-                        },
-                        {
-                            name: 'Pass vs Run Tendency',
-                            formula: 'rushingTendency = 0.925 * bound(offRushing - 0.25*defRushing)',
-                            weight: 'Medium',
-                            details: [
-                                'offRushing = (rushing + runBlocking) / 2',
-                                'Defense gets 0.25x weight vs offense',
-                                'Compared against passing tendency',
-                                'Ensures minimum 35% rush frequency'
-                            ]
-                        }
-                    ]
-                },
-                receiving: {
-                    title: 'Receiving & Target Selection',
-                    icon: <TrendingUp className="w-5 h-5" />,
-                    color: 'purple',
-                    impacts: [
-                        {
-                            name: 'Receiver Composite',
-                            formula: 'Top 3 receivers weighted 5, 3, 2, plus 0.5 and 0.25 for depth',
-                            weight: 'High',
-                            details: [
-                                'Uses WR overall rating for sorting',
-                                'Includes WR, TE, RB positions',
-                                'Depth receivers add small contribution',
-                                'Factors into pass vs run decision'
-                            ]
-                        },
-                        {
-                            name: 'Target Selection',
-                            formula: 'Weighted by catching (20%) or gettingOpen (80%)',
-                            weight: 'Medium',
-                            details: [
-                                'Getting open weighted 4x more than catching',
-                                'RB targets often shorter (50% yardage for low gettingOpen)',
-                                'Speed adds ~10 yards adjustment',
-                                'Deep passes: 5% chance based on QB passingDeep'
-                            ]
-                        }
-                    ]
-                },
-                blocking: {
-                    title: 'Offensive & Defensive Lines',
-                    icon: <Users className="w-5 h-5" />,
-                    color: 'orange',
-                    impacts: [
-                        {
-                            name: 'Pass Blocking Composite',
-                            formula: 'Top 5 OL weighted 5,4,3,3,3, plus TE(1) and RB(0.5)',
-                            weight: 'Critical',
-                            details: [
-                                'Protects against sacks',
-                                'Reduces interception probability',
-                                'Affects completion percentage (via sqrt ratio)',
-                                'Uses OL overall rating + passBlocking composite average'
-                            ]
-                        },
-                        {
-                            name: 'Run Blocking Composite',
-                            formula: 'Top 5 OL weighted 5,4,3,3,3, plus TE(1) and RB(0.5)',
-                            weight: 'Critical',
-                            details: [
-                                'Directly impacts rush yards (50% of formula)',
-                                'Uses OL overall rating + runBlocking composite average',
-                                'Same weighting structure as pass blocking'
-                            ]
-                        },
-                        {
-                            name: 'Pass Rushing Composite',
-                            formula: 'Top 5 DL/LB weighted 5,4,3,2,1',
-                            weight: 'High',
-                            details: [
-                                'Drives sack probability',
-                                'Increases interception chances',
-                                'Uses DL overall rating + passRushing composite average'
-                            ]
-                        },
-                        {
-                            name: 'Run Stopping Composite',
-                            formula: 'Top 7 DL/LB/S weighted 5,4,3,2,2,1,1, plus 0.5 depth',
-                            weight: 'High',
-                            details: [
-                                'Reduces opponent rush yards',
-                                'More positions involved than pass rush',
-                                'Uses DL overall rating + runStopping composite average'
-                            ]
-                        }
-                    ]
-                },
-                coverage: {
-                    title: 'Pass Defense & Coverage',
-                    icon: <Info className="w-5 h-5" />,
-                    color: 'red',
-                    impacts: [
-                        {
-                            name: 'Pass Coverage Composite',
-                            formula: 'Top 4 CB/S/LB weighted 5,4,3,2, plus 1 and 0.5 depth',
-                            weight: 'Critical',
-                            details: [
-                                'Reduces completion percentage',
-                                'Increases interception probability',
-                                'Uses CB overall rating + passCoverage composite average',
-                                'Individual defender matters for completions'
-                            ]
-                        },
-                        {
-                            name: 'Team vs Individual Coverage',
-                            formula: 'Team composite (0.5x) + Individual defender coverage',
-                            weight: 'High',
-                            details: [
-                                'Completion: Both team and individual defender count',
-                                'Interception: Individual defender weighted more (0.022 vs 0.004)',
-                                'Shows both scheme and individual talent matter'
-                            ]
-                        }
-                    ]
-                },
-                special: {
-                    title: 'Special Teams & Situational',
-                    icon: <Zap className="w-5 h-5" />,
-                    color: 'yellow',
-                    impacts: [
-                        {
-                            name: 'Field Goal Probability',
-                            formula: 'Base % by distance, adjusted by kickingPower (-20 to +20 yds) and kickingAccuracy (up to ±baseProb/2)',
-                            weight: 'High',
-                            details: [
-                                'Distance adjusted by kicker power composite',
-                                'Accuracy provides bonus (max: half of base probability)',
-                                'Modified by fgAccuracyFactor setting',
-                                'Ranges from 99% (under 20 yds) to 0% (75+ yds)'
-                            ]
-                        },
-                        {
-                            name: 'Fumble Probability',
-                            formula: '0.0125 * (1.5 - ballSecurity) * fumbleFactor',
-                            weight: 'Medium',
-                            details: [
-                                'Lower ballSecurity = more fumbles',
-                                'Modified by fumbleFactor setting',
-                                'Applies to rushes and receptions'
-                            ]
-                        },
-                        {
-                            name: 'QB Scramble Probability',
-                            formula: '0.01 + max(0, 0.35*(qbRB_ovr - 30)/100) * scrambleFactor',
-                            weight: 'Low',
-                            details: [
-                                'Based on QB rushing overall rating',
-                                'Threshold at 30 rating',
-                                'Modified by scrambleFactor setting'
-                            ]
-                        }
-                    ]
-                }
-            };
-
-            const getColorClass = (color) => {
-                const colors = {
-                    blue: 'bg-blue-50 border-blue-200 text-blue-900',
-                    green: 'bg-green-50 border-green-200 text-green-900',
-                    purple: 'bg-purple-50 border-purple-200 text-purple-900',
-                    orange: 'bg-orange-50 border-orange-200 text-orange-900',
-                    red: 'bg-red-50 border-red-200 text-red-900',
-                    yellow: 'bg-yellow-50 border-yellow-200 text-yellow-900'
-                };
-                return colors[color] || colors.blue;
-            };
-
-            const getWeightBadge = (weight) => {
-                const colors = {
-                    Critical: 'bg-red-100 text-red-800 border-red-300',
-                    High: 'bg-orange-100 text-orange-800 border-orange-300',
-                    Medium: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-                    Low: 'bg-green-100 text-green-800 border-green-300'
-                };
-                return colors[weight] || colors.Medium;
-            };
-
-            const category = categories[selectedCategory];
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
-                    <div className="max-w-6xl mx-auto">
-                        <div className="mb-8">
-                            <h1 className="text-4xl font-bold text-slate-800 mb-2">
-                                Football Composite Rating Impact Analysis
-                            </h1>
-                            <p className="text-slate-600 text-lg">
-                                Understanding how player ratings drive game simulation outcomes
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
-                            {Object.entries(categories).map(([key, cat]) => (
-                                <button
-                                    key={key}
-                                    onClick={() => setSelectedCategory(key)}
-                                    className={`p-4 rounded-lg border-2 transition-all ${
-                                        selectedCategory === key
-                                            ? getColorClass(cat.color) + ' shadow-lg scale-105'
-                                            : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
-                                    }`}
-                                >
-                                    <div className="flex flex-col items-center gap-2">
-                                        {cat.icon}
-                                        <span className="text-sm font-semibold text-center">{cat.title}</span>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
-                            <div className="flex items-center gap-3 mb-6">
-                                {category.icon}
-                                <h2 className="text-3xl font-bold text-slate-800">{category.title}</h2>
+                <div class="space-y-6">
+                    <!-- Core Architecture -->
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">Core Architecture</h3>
+                        <p class="text-slate-700 mb-4 leading-relaxed">
+                            The football game simulation engine uses a sophisticated composite rating system where individual player attributes are combined to create specialized ratings for different game situations. Each play type evaluates players using specific composite formulas that weight various skills.
+                        </p>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Composite Ratings:</strong> Pre-calculated combinations of player attributes optimized for specific situations</p>
                             </div>
-
-                            <div className="space-y-6">
-                                {category.impacts.map((impact, idx) => (
-                                    <div 
-                                        key={idx}
-                                        className="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-                                    >
-                                        <div className="flex items-start justify-between mb-4">
-                                            <h3 className="text-xl font-bold text-slate-800 flex-1">
-                                                {impact.name}
-                                            </h3>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getWeightBadge(impact.weight)}`}>
-                                                {impact.weight} Impact
-                                            </span>
-                                        </div>
-
-                                        <div className="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
-                                            <div className="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
-                                            <code className="text-sm text-slate-800 font-mono break-all">
-                                                {impact.formula}
-                                            </code>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            {impact.details.map((detail, detailIdx) => (
-                                                <div key={detailIdx} className="flex items-start gap-2">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0" />
-                                                    <p className="text-slate-700 text-sm leading-relaxed">{detail}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Fatigue System:</strong> Energy levels affect performance dynamically throughout the game</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Position-Based Mechanics:</strong> Different calculations for each position's unique role</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Home Court Advantage:</strong> Modifies all composite ratings except endurance</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Injury System:</strong> Position-specific injury rates and age-based modulation</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-                            <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
-                                <Info className="w-5 h-5" />
-                                Key Insights
-                            </h3>
-                            <div className="space-y-2 text-sm text-blue-800">
-                                <p>• <strong>Multiplicative Effects:</strong> Most formulas multiply offense vs defense ratings, making balanced teams stronger than unbalanced ones</p>
-                                <p>• <strong>Fatigue Impact:</strong> Player energy levels directly multiply their composite ratings during play selection</p>
-                                <p>• <strong>Depth Matters:</strong> While starters are weighted heavily, backup contributions are included in most composites</p>
-                                <p>• <strong>Position-Specific:</strong> Each position uses a mix of overall rating and specific composite rating (averaged)</p>
-                                <p>• <strong>Game Settings:</strong> Many probabilities can be tuned via factor settings (passFactor, sackFactor, etc.)</p>
+                    <!-- Key Constants -->
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">Key Constants & Configuration</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="text-sm text-slate-600 mb-1">Number of Downs</div>
+                                <div class="text-2xl font-bold text-slate-800">4</div>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="text-sm text-slate-600 mb-1">Starting Timeouts</div>
+                                <div class="text-2xl font-bold text-slate-800">3</div>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="text-sm text-slate-600 mb-1">FG Distance Add</div>
+                                <div class="text-2xl font-bold text-slate-800">17 yds</div>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="text-sm text-slate-600 mb-1">Two Min Warning</div>
+                                <div class="text-2xl font-bold text-slate-800">2:00</div>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="text-sm text-slate-600 mb-1">Avg Tackling</div>
+                                <div class="text-2xl font-bold text-slate-800">0.56</div>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="text-sm text-slate-600 mb-1">Max Overtimes</div>
+                                <div class="text-2xl font-bold text-slate-800">Variable</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fatigue Mechanics -->
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Fatigue Mechanics</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <p class="text-slate-700 mb-4 leading-relaxed">
+                            Player energy levels directly affect composite rating effectiveness through a fatigue multiplier.
+                        </p>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono block">
+fatigue(energy, injured) {
+    if (injured) return 0;
+    energy += 0.05;
+    if (energy > 1) energy = 1;
+    return energy;
+}
+
+effectiveRating = compositeRating × fatigue(energy, injured)
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Energy decreases by <strong>0.08 × (1 - endurance)</strong> per play</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Bench time recovers energy at <strong>0.5 per minute</strong></p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Injured players have <strong>0% effectiveness</strong></p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Positions with fatigue tracking: RB, WR, TE, DL, LB, CB, S</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            );
-        };
+            </div>
+        </div>
 
-        ReactDOM.render(<CompositeImpactAnalysis />, document.getElementById('root'));
+        <!-- PASSING PLAY SECTION -->
+        <div class="content-section hidden" id="passing">
+            <div class="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span>⚡</span>
+                    Passing Play Decisions
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">QB Composite for Passing Decisions</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <p class="text-slate-700 mb-4 leading-relaxed">
+                            Determines whether the QB decides to pass, scramble, or take a sack. This is one of the most important ratings in the simulation.
+                        </p>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                passingVision + intelligence + scrambling
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Used to determine if QB finds open receiver</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Affects sack probability when pocket collapses</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Influences scramble success rate</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Modified by fatigue and injury status</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">QB Composite for Scrambling</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                scrambling + speed + agility
+                            </code>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Determines yards gained when QB decides to run with the ball. Compared against defensive pursuit to calculate final outcome.
+                        </p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Pass Accuracy Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                passingAccuracy + passingPower
+                            </code>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Combined with receiver's catching ability to determine completion probability. Critical for short, medium, and deep passes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RUSHING PLAY SECTION -->
+        <div class="content-section hidden" id="rushing">
+            <div class="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span>🏃</span>
+                    Rushing Play Mechanics
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Ball Carrier Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                rushing + speed + strength + agility
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Primary rating for determining rushing yards gained</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Compared against defensive tackling composite</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Affects both initial hole hitting and secondary moves</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Modified by fatigue throughout the game</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Running Back Receiving</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-100 text-yellow-800 border-yellow-300">Medium Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                receiving + speed + agility
+                            </code>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Used when RBs run routes out of the backfield. Determines target selection probability and reception success.
+                        </p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Yards After Contact</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <p class="text-slate-700 mb-4 leading-relaxed">Additional yardage calculation after initial contact:</p>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Strength vs tackling determines broken tackles</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Speed creates additional yards after initial surge</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Agility affects ability to make defenders miss</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Can result in explosive plays or short gains</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECEIVING & TARGET SELECTION SECTION -->
+        <div class="content-section hidden" id="receiving">
+            <div class="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span>📍</span>
+                    Receiving & Target Selection
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Receiver Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                receiving + speed + agility
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Primary rating for target selection by QB</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Weighted choice increases probability for better receivers</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Modified by coverage quality from defenders</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Affects completion probability and yards after catch</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Tight End Receiving</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                receiving + speed
+                            </code>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Slightly different formula acknowledges TEs typically don't need as much agility, focusing more on size mismatches and seam routes.
+                        </p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Catch Probability Calculation</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <p class="text-slate-700 mb-4 leading-relaxed">Multiple factors combine to determine if a pass is completed:</p>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono block">
+baseProb = (qbAccuracy + receiverCatching) / 2
+coverage = defenderCoverage × fatigue
+difficulty = passDepth × defenderProximity
+finalProb = baseProb × (1 - coverage) × (1 - difficulty)
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">QB accuracy composite vs receiver catching composite</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Defender pass coverage reduces completion chance</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Deep passes have lower completion probability</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Tight coverage significantly reduces success</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Yards After Catch (YAC)</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">YAC Composite:</div>
+                            <code class="text-sm text-slate-800 font-mono block mb-3">speed + agility + strength</code>
+                            <div class="text-sm text-slate-700 space-y-1">
+                                <div>1. Initial catch point determined by route depth</div>
+                                <div>2. Speed determines breakaway potential</div>
+                                <div>3. Agility affects making defenders miss</div>
+                                <div>4. Strength helps break arm tackles</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OFFENSIVE & DEFENSIVE LINES SECTION -->
+        <div class="content-section hidden" id="lines">
+            <div class="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span>👥</span>
+                    Offensive & Defensive Lines
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Pass Blocking Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                Top 5 OL weighted [5,4,3,3,3], plus TE(1) and RB(0.5)
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Protects against sacks from defensive pressure</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Reduces interception probability via protection time</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Affects completion percentage through pocket stability</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Uses OL overall rating + passBlocking composite average</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Run Blocking Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                Top 5 OL weighted [5,4,3,3,3], plus TE(3) and WR(1)
+                            </code>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Creates running lanes and determines initial yards before contact. Critical for establishing the run game.
+                        </p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Pass Rush Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                Top 4 DL weighted [4,4,3,3] + Top 3 LB weighted [2,2,1]
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Determines sack probability and QB pressure</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Forces faster throws and more mistakes</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">DL focused but LBs contribute on blitzes</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Compared directly against pass blocking composite</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Run Defense Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                Top 4 DL weighted [3,3,2,2] + Top 4 LB weighted [4,4,3,3]
+                            </code>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed">
+                            Determines how many yards a ball carrier gains. LBs weighted more heavily as they're primary run defenders.
+                        </p>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Tackling System</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Average Tackling Composite:</div>
+                            <code class="text-sm text-slate-800 font-mono block mb-2">0.56 (default leagues)</code>
+                            <div class="text-sm text-slate-700">
+                                <div><strong>Used in:</strong></div>
+                                <div>• Run defense calculations</div>
+                                <div>• Yards after catch prevention</div>
+                                <div>• Open field tackle success</div>
+                                <div>• Fumble force probability</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASS DEFENSE & COVERAGE SECTION -->
+        <div class="content-section hidden" id="defense">
+            <div class="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span>🛡️</span>
+                    Pass Defense & Coverage
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Pass Coverage Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-red-100 text-red-800 border-red-300">Critical Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                Top 3 CB weighted [4,3,3] + Top 2 S weighted [2,2]
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Directly reduces completion probability on passes</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Affects receiver target selection by QB</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Higher coverage increases interception chances</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">CBs weighted more heavily than safeties</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Interception Mechanics</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <p class="text-slate-700 mb-4 leading-relaxed">Interceptions occur based on multiple factors:</p>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono block">
+baseIntProb = defenderCoverage - qbAccuracy
+pressure = passRush - passBlocking
+tightCoverage = receiverSeparation < threshold
+
+intProbability = baseIntProb + pressure*0.3 + tightCoverage*0.2
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Better coverage increases INT probability</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">QB pressure forces more mistakes</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Tight coverage on receiver raises INT chance</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Poor QB accuracy increases turnovers</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Defensive Back Speed Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-100 text-yellow-800 border-yellow-300">Medium Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                speed + agility
+                            </code>
+                        </div>
+                        <div class="text-sm text-slate-700">
+                            <div><strong>Used for:</strong></div>
+                            <div>• Closing speed on ball carriers</div>
+                            <div>• Recovery speed when beaten</div>
+                            <div>• Return ability on interceptions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPECIAL TEAMS SECTION -->
+        <div class="content-section hidden" id="special">
+            <div class="bg-white rounded-xl shadow-xl p-8 border border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                    <span>⭐</span>
+                    Special Teams & Situational
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Field Goal Accuracy</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono block">
+actualDistance = scrimmage + 17 yards
+
+baseProbability = kicker.kickPower × kicker.kickAccuracy
+distanceFactor = 1 - (distance / maxDistance)
+finalProb = baseProbability × distanceFactor
+
+Bounded: min(0.01, max(0.99, finalProb))
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">17 yards added to scrimmage line for snap/hold</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Probability decreases with distance</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Never 0% or 100% to maintain realism</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Punting Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-100 text-yellow-800 border-yellow-300">Medium Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                kickPower + kickAccuracy
+                            </code>
+                        </div>
+                        <div class="text-sm text-slate-700">
+                            <div><strong>Determines:</strong></div>
+                            <div>• Punt distance</div>
+                            <div>• Hangtime (affects return yards)</div>
+                            <div>• Touchback probability</div>
+                            <div>• Coffin corner placement</div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Kick/Punt Return Composite</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono break-all">
+                                speed + agility + strength
+                            </code>
+                        </div>
+                        <div class="text-sm text-slate-700">
+                            <div><strong>Process:</strong></div>
+                            <div>1. Initial return distance based on kick quality</div>
+                            <div>2. Speed determines breakaway potential</div>
+                            <div>3. Agility for making defenders miss</div>
+                            <div>4. Strength for breaking arm tackles</div>
+                            <div>5. Compare vs special teams coverage</div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Special Teams Coverage</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-100 text-yellow-800 border-yellow-300">Medium Impact</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Coverage Team Composite:</div>
+                            <code class="text-sm text-slate-800 font-mono block mb-2">speed + tackling</code>
+                            <div class="text-sm text-slate-700">
+                                <div>• Faster players get downfield quicker</div>
+                                <div>• Better tacklers limit return yards</div>
+                                <div>• Team-wide rating vs individual returner</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Situational Adjustments</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-orange-100 text-orange-800 border-orange-300">High Impact</span>
+                        </div>
+                        <p class="text-slate-700 mb-4 leading-relaxed">The simulation includes several situational modifiers:</p>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Two-Point Conversions:</strong> Special play type with different success rates</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Kneeling Logic:</strong> QB kneels when winning late (uses 42 seconds per kneel)</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Overtime Rules:</strong> Different rules for playoffs vs regular season</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Clock Management:</strong> Running vs passing based on score differential and time</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed"><strong>Prevent Defense:</strong> Applied in specific late-game situations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-start justify-between mb-4">
+                            <h3 class="text-xl font-bold text-slate-800">Penalty System</h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-100 text-yellow-800 border-yellow-300">Medium Impact</span>
+                        </div>
+                        <p class="text-slate-700 mb-4 leading-relaxed">Penalties can occur on most play types with position-specific probabilities:</p>
+                        <div class="bg-slate-50 rounded-lg p-4 mb-4 border border-slate-200">
+                            <div class="text-sm font-semibold text-slate-600 mb-2">Formula:</div>
+                            <code class="text-sm text-slate-800 font-mono block">
+penaltyProb = basePenaltyRate × foulRateFactor
+
+Max Penalties Per Play: 2
+                            </code>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Different penalties have different yard values</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Some penalties include automatic first downs</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Spot fouls calculated based on play yardage</p>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-slate-400 mt-2 flex-shrink-0"></div>
+                                <p class="text-slate-700 text-sm leading-relaxed">Can be accepted or declined by opposing coach</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-bold text-blue-900 mb-3 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <line x1="12" y1="16" x2="12" y2="12" stroke-width="2"/>
+                    <circle cx="12" cy="8" r="0.5" fill="currentColor" stroke-width="2"/>
+                </svg>
+                Key Insights
+            </h3>
+            <div class="space-y-2 text-sm text-blue-800">
+                <p>• <strong>Multiplicative Effects:</strong> Most formulas multiply offense vs defense ratings, making balanced teams stronger than unbalanced ones</p>
+                <p>• <strong>Fatigue Impact:</strong> Player energy levels directly multiply their composite ratings during play selection</p>
+                <p>• <strong>Depth Matters:</strong> While starters are weighted heavily, backup contributions are included in most composites</p>
+                <p>• <strong>Position-Specific:</strong> Each position uses a mix of overall rating and specific composite rating (averaged)</p>
+                <p>• <strong>Game Settings:</strong> Many probabilities can be tuned via factor settings (passFactor, sackFactor, etc.)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-slate-800 text-white text-center p-6 mt-12">
+        <p>Football Game Simulation Analysis • Technical Breakdown of Composite Rating System</p>
+        <p class="text-slate-400 mt-2 text-sm">Generated from 2,400+ lines of TypeScript simulation code</p>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.content-section');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.dataset.tab;
+                
+                // Update tabs
+                tabs.forEach(t => {
+                    t.classList.remove('bg-blue-50', 'border-blue-500', 'text-blue-900', 'shadow-lg');
+                    t.classList.add('bg-white', 'border-slate-200', 'text-slate-700', 'hover:border-slate-400');
+                });
+                
+                // Update sections
+                sections.forEach(s => s.classList.add('hidden'));
+                
+                // Activate selected
+                tab.classList.remove('bg-white', 'border-slate-200', 'text-slate-700', 'hover:border-slate-400');
+                tab.classList.add('bg-blue-50', 'border-blue-500', 'text-blue-900', 'shadow-lg');
+                
+                document.getElementById(targetId).classList.remove('hidden');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
     </script>
 </body>
 </html>
